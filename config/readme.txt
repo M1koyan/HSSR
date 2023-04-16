@@ -1,9 +1,9 @@
-In diesem Ordner eine Datei "mconfig.json" erstellen, nach folgendem Format, wobei die einträge in () ersetzt werden müssen:
+Create a file "mconfig.json" with the following elements in it:
 {
-	"Token" : "(hierkönnteihrtokenstehen)",
-	"ErrorHbChannel" : (hierDieHeartbeat bzw fehler kanal ID),
-	"Prefixes" : [ "(prefix)", "(mehrere)", "(mit)", "(kommas getrennt)" ],
-	"DiscordInvite" : "(Der Invite link zu dem botdiscord - optional)",
-	"GitHub" : "(Der Link zum github repo - optional)",
-	"AuthUsers" : (DieIds der bot admins)
+	"Token" : "(ThisIsWhereYourBotTokenGoes)",
+	"ErrorHbChannel" : (ID of the error message channel),
+	"Prefixes" : [ "(prefixes)", "(seperate)", "(multiple)", "(with commas)" ],
+	"DiscordInvite" : "(Invite link to bot discord - optional)",
+	"GitHub" : "(Link to github repo - optional)",
+	"AuthUsers" : [(Ids of the bot admins), (seperated with commas)]
 }

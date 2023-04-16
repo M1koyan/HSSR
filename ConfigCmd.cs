@@ -9,15 +9,15 @@ using DSharpPlus.CommandsNext.Attributes;
 using static Sylt51bot.Program;
 namespace Sylt51bot
 {
-	[Group("config"), Description("Beinhaltet Befehle für die Konfiguration innerhalb des servers\n\nBenutzung:\n```config <befehlname>```"), IsExclude(), CommandClass(CommandClasses.ConfigCommands)]
+	[Group("config"), Description("Contains commands for the configuration within a server.\n\nUsage:\n```config <commandname>```"), IsExclude(), CommandClass(CommandClasses.ConfigCommands)]
 	public class ConfigCommands : BaseCommandModule
 	{
-		[Command("show"), Description("Zeigt die aktuelle Konfiguration des servers\n\nBenutzung:\n```config show```"), CommandClass(CommandClasses.ConfigCommands)]
+		[Command("show"), Description("Shows current configurations of the server\n\nUsage:\n```config show```"), CommandClass(CommandClasses.ConfigCommands)]
 		public async Task ListCfg(CommandContext e, string format = "n")
 		{
 			try
 			{
-				DiscordEmbedBuilder embed = new DiscordEmbedBuilder { Color = DiscordColor.Green, Title = $"Server Konfiguration für server {e.Guild.Name}" };
+				DiscordEmbedBuilder embed = new DiscordEmbedBuilder { Color = DiscordColor.Green, Title = $"Server configuration for server {e.Guild.Name}" };
 				RegisteredServer s = servers.Find(x => x.Id == e.Guild.Id);
 				
 				if(format == "n")
@@ -27,7 +27,7 @@ namespace Sylt51bot
 
 					foreach (var module in Enum.GetValues(typeof(Classes.Modules)))
 					{
-						if ((uint)module != (uint)Classes.Modules.None && (uint)module != (uint)Classes.Modules.All)
+						if ((Modules)module != Classes.Modules.None && (Modules)module != Classes.Modules.All)
 						{
 							enModules += $"{module.ToString()}: {servers.Find(x => x.Id == e.Guild.Id).EnabledModules.HasFlag((Enum)module)}\n";
 						}
@@ -59,7 +59,7 @@ namespace Sylt51bot
 			}
 		}
 
-		[Command("minxp"), Description("Ändert die mindestanzahl an erhaltbaren xp pro nachricht im jeweiligen Zeitinterval.\n\nBenutzung:\n```config minxp <anzahl>```"), CommandClass(CommandClasses.ConfigCommands), RequireUserPermissions2(DSharpPlus.Permissions.ManageGuild)]
+		[Command("minxp"), Description("Changes the minimum amount of xp you can receive.\n\nUsage:\n```config minxp <amount>```"), CommandClass(CommandClasses.ConfigCommands), RequireUserPermissions2(DSharpPlus.Permissions.ManageGuild)]
 		public async Task SetMinXp(CommandContext e, int newxp)
 		{
 			try
@@ -81,7 +81,7 @@ namespace Sylt51bot
 			}
 		}
 
-		[Command("maxxp"), Description("Ändert die maximalanzahl an erhaltbaren xp pro nachricht im jeweiligen Zeitinterval.\n\nBenutzung:\n```config maxxp <anzahl>```"), CommandClass(CommandClasses.ConfigCommands), RequireUserPermissions2(DSharpPlus.Permissions.ManageGuild)]
+		[Command("maxxp"), Description("Changes the maximum amount of xp you can receive.\n\nUsage:\n```config maxxp <amount>```"), CommandClass(CommandClasses.ConfigCommands), RequireUserPermissions2(DSharpPlus.Permissions.ManageGuild)]
 		public async Task SetMaxXp(CommandContext e, int newxp)
 		{
 			try
@@ -104,7 +104,7 @@ namespace Sylt51bot
 			}
 		}
 
-		[Command("cooldown"), Description("Ändert das Zeitintervall für den Cooldown zwischen einem xp-erhalt und dem nächsten\nBenutzung:\n```config cooldown <Neue Cooldownzeit>```"), CommandClass(CommandClasses.ConfigCommands), RequireUserPermissions2(DSharpPlus.Permissions.ManageGuild)]
+		[Command("cooldown"), Description("Changes the xp-receiving cooldown\n\nUsage:\n```config cooldown <new cooldown time>```\nFormat:\n```hh:mm:ss```"), CommandClass(CommandClasses.ConfigCommands), RequireUserPermissions2(DSharpPlus.Permissions.ManageGuild)]
 		public async Task SetCoolDown(CommandContext e, string d)
 		{
 			try
@@ -133,7 +133,7 @@ namespace Sylt51bot
 				await AlertException(e, ex);
 			}
 		}
-		[Command("togglemodule"), Description("Schaltet ein Modul an oder aus\n\nBenutzung:\n```config togglemodule <Modulname>```"), CommandClass(CommandClasses.ConfigCommands), RequireUserPermissions2(DSharpPlus.Permissions.ManageGuild)]
+		[Command("togglemodule"), Description("Toggles a specified module on or off\n\nUsage:\n```config togglemodule <module name>```"), CommandClass(CommandClasses.ConfigCommands), RequireUserPermissions2(DSharpPlus.Permissions.ManageGuild)]
 		public async Task ToggleModule(CommandContext e, string ModuleName = "help")
 		{
 			try

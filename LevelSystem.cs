@@ -74,7 +74,7 @@ namespace Sylt51bot
 					}
 					if (hasChanged == true)
 					{
-						await discord.SendMessageAsync(e.Channel, new DiscordEmbedBuilder { Description = $"**{e.Author.Mention}** hat Level **`{userslevel}`** erreicht!", Color = DiscordColor.Green });
+						await discord.SendMessageAsync(e.Channel, new DiscordEmbedBuilder { Description = $"**{e.Author.Mention}** reached level **`{userslevel}`**!", Color = DiscordColor.Green });
 					}
 					File.WriteAllText("config/RegServers.json", JsonConvert.SerializeObject(servers, Formatting.Indented));
 				}
@@ -118,12 +118,12 @@ namespace Sylt51bot
 
 	public class LevelCommands : BaseCommandModule
 	{
-		[Command("lvlroles"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Zeigt die Levelrollen an, zusammen mit den benötigten Punkten\n\nBenutzung:\n```lvlroles```"), RequireBotPermissions2(Permissions.SendMessages)]
+		[Command("lvlroles"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Shows the level roles of this server and the required xp\n\nUsage:\n```lvlroles```"), RequireBotPermissions2(Permissions.SendMessages)]
 		public async Task LvlRoles(CommandContext e)
 		{
 			try
 			{
-				DiscordEmbedBuilder embed = new DiscordEmbedBuilder { Color = DiscordColor.Green, Title = $"Level Rollen für {e.Guild.Name}", Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail { Url = e.Guild.IconUrl } };
+				DiscordEmbedBuilder embed = new DiscordEmbedBuilder { Color = DiscordColor.Green, Title = $"Level roles for {e.Guild.Name}", Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail { Url = e.Guild.IconUrl } };
 				if (servers.FindIndex(x => x.Id == e.Guild.Id) == -1)
 				{
 					servers.Add(new RegisteredServer { Id = e.Guild.Id });
@@ -135,7 +135,7 @@ namespace Sylt51bot
 				string embedstring = "";
 				if (roles.Count() == 1)
 				{
-					embedstring = "Es gibt noch keine Rollen die mit Leveln verbunden sind!";
+					embedstring = "There's no level roles in this server!";
 					await discord.SendMessageAsync(await discord.GetChannelAsync(e.Message.Channel.Id), embed);
 					return;
 				}
@@ -150,7 +150,7 @@ namespace Sylt51bot
 						}
 					}
 				}
-				embed.AddField("Chatte um XP zu sammeln!", embedstring, true);
+				embed.AddField("Chat to gain xp!", embedstring, true);
 				await discord.SendMessageAsync(await discord.GetChannelAsync(e.Message.Channel.Id), embed);
 			}
 			catch (Exception ex)
@@ -159,7 +159,7 @@ namespace Sylt51bot
 			}
 		}
 
-		[Command("top"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Zeigt die Bestenliste des Servers an\n\nUsage:\n```top [page, defaults to 1]```"), Aliases("lb"), Module(Modules.Levelling)]
+		[Command("top"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Shows the servers xp leaderboard\n\nUsage:\n```top [page, defaults to 1]```"), Aliases("lb"), Module(Modules.Levelling)]
 		public async Task Leaderboard(CommandContext e, int page = 1)
 		{
 			try
@@ -233,7 +233,7 @@ namespace Sylt51bot
 			}
 		}
 
-		[Command("rank"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Zeigt den Level von dir oder einem anderen Benutzers an\n\nUsage:\n```rank [ ID / @mention ]```"), Aliases("lvl", "level"), RequireBotPermissions2(Permissions.SendMessages)]
+		[Command("rank"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Shows yours or another users level\n\nUsage:\n```rank [ ID / @mention ]```"), Aliases("lvl", "level"), RequireBotPermissions2(Permissions.SendMessages)]
 		public async Task Rank(CommandContext e, DiscordUser user = null)
 		{
 			try
@@ -291,8 +291,8 @@ namespace Sylt51bot
 								progstring += "⬜";
 							}
 						}
-						embed.AddField("Fortschritt", $"**```{s.xplist[user.Id] - s.lvlroles[userslevel].XpReq}xp / {s.lvlroles[userslevel + 1].XpReq - s.lvlroles[userslevel].XpReq}xp```**\n" + progstring, true);
-						embed.AddField("Nächstes level", $"**[Level {s.lvlroles.IndexOf(s.lvlroles[userslevel + 1])}]** | **<@&{s.lvlroles[userslevel + 1].RoleId}> | {s.lvlroles[userslevel + 1].XpReq} Gesamt XP benötigt**", false);
+						embed.AddField("Progress", $"**```{s.xplist[user.Id] - s.lvlroles[userslevel].XpReq}xp / {s.lvlroles[userslevel + 1].XpReq - s.lvlroles[userslevel].XpReq}xp```**\n" + progstring, true);
+						embed.AddField("Next Level", $"**[Level {s.lvlroles.IndexOf(s.lvlroles[userslevel + 1])}]** | **<@&{s.lvlroles[userslevel + 1].RoleId}> | {s.lvlroles[userslevel + 1].XpReq} Gesamt XP benötigt**", false);
 					}
 					else
 					{
@@ -316,8 +316,12 @@ namespace Sylt51bot
 				await AlertException(e, ex);
 			}
 		}
-
-		[Command("lvledit"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Editiert die erforderliche XP, für eine Rolle in einem Server.\nWenn kein XP Argument angegeben wurde wird die Rolle entfernt. Ansonsten wird die Anzahl der benötigten XP aktualisiert\n\nBenutzung:\n```lvladd < ID / @mention > [score]```"), RequireUserPermissions2(Permissions.ManageGuild), RequireBotPermissions2(Permissions.ManageRoles & Permissions.SendMessages)]
+		[Command("convertleveltoxp"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), RequireUserPermissions2(Permissions.ManageGuild), RequireBotPermissions2(Permissions.ManageRoles & Permissions.SendMessages)]
+		public async Task ConvertLevelToXpCmd(CommandContext e, int lvl)
+		{
+			await e.RespondAsync(Program.ConvertLevelToXp(lvl).ToString());
+		}
+		[Command("lvledit"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Edits the required amount of xp to obtain a specified role.\nIf the amount is zero, or omitted, the role will be removed.\n\nUsage:\n```lvladd < ID / @mention > [score]```"), RequireUserPermissions2(Permissions.ManageGuild), RequireBotPermissions2(Permissions.ManageRoles & Permissions.SendMessages)]
 		public async Task LvlAdd(CommandContext e, DiscordRole role, int score = 0)
 		{
 			try
@@ -325,7 +329,7 @@ namespace Sylt51bot
 
 				if (e.Guild.Roles.Values.ToList().FindIndex(x => x.Id == role.Id) == -1)
 				{
-					await discord.SendMessageAsync(e.Message.Channel, new DiscordEmbedBuilder { Color = DiscordColor.Red, Description = $"Rolle **{role.Name}** existiert nicht in diesem Server!" });
+					await discord.SendMessageAsync(e.Message.Channel, new DiscordEmbedBuilder { Color = DiscordColor.Red, Description = $"Role **{role.Name}** doesn't exist in this server!" });
 					return;
 				}
 
@@ -375,7 +379,7 @@ namespace Sylt51bot
 			}
 		}
 
-		[Command("xpedit"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Ändert die Anzahl an XP, die ein Benutzer hat.\nWenn kein XP Argument angegeben wird die XP zu 0 zurückgesetzt. Ansonsten wird es zur eingegebenen Eingabe aktualisiert\n\nBenutzung:\n```addxp < ID / @mention > [xp]```"), RequireUserPermissions2(Permissions.ManageGuild), RequireBotPermissions2(Permissions.SendMessages)]
+		[Command("xpedit"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Edits the **total** amount of xp a user has to the provided value.\n\nUsage:\n```addxp < ID / @mention > [xp]```"), RequireUserPermissions2(Permissions.ManageGuild), RequireBotPermissions2(Permissions.SendMessages)]
 		public async Task AddXpUser(CommandContext e, DiscordUser user, int xp = 0)
 		{
 			try
@@ -427,7 +431,7 @@ namespace Sylt51bot
 			}
 		}
 
-		[Command("channeledit"), CommandClass(CommandClasses.LevelCommands), Description("Aktiviert/Deaktiviert das verdienen von XP im angegebenen Kanal\n\nBenutzung:\n```channeledit < ID / #mention >```"), RequireGuild(), RequireUserPermissions2(Permissions.ManageGuild), RequireBotPermissions2(Permissions.SendMessages)]
+		[Command("channeledit"), CommandClass(CommandClasses.LevelCommands), Description("Activates/Deactivates xp gaining in the specified channel \n\nUsage:\n```channeledit < ID / #mention >```"), RequireGuild(), RequireUserPermissions2(Permissions.ManageGuild), RequireBotPermissions2(Permissions.SendMessages)]
 		public async Task ChannelEdit(CommandContext e, DiscordChannel channel) 
 		{
 			try
