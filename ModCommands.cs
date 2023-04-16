@@ -9,7 +9,7 @@ namespace Sylt51bot
 {
 	public class ModeratorCommands : BaseCommandModule
 	{
-		[Command("exclude"), Description("Exkludiert einen Nutzer lokal auf dem server vom Benutzen des Bots\n\nBenutzung:\n```globalexclude < ID / @mention >```"), RequireUserPermissions2(DSharpPlus.Permissions.ManageGuild), IsExclude, CommandClass(Classes.CommandClasses.ModCommands)]
+		[Command("exclude"), Description("Excludes a user locally from using the bot\n\nUsage:\n```localexclude < ID / @mention >```"), RequireUserPermissions2(DSharpPlus.Permissions.ManageGuild), IsExclude, CommandClass(Classes.CommandClasses.ModCommands)]
 		public async Task LocalExclude(CommandContext e, DiscordUser u)
 		{
 			try
@@ -18,12 +18,12 @@ namespace Sylt51bot
 				if(!s.ServerBlockedUsers.Contains(u.Id))
 				{
 					servers.Find(x => x.Id == e.Guild.Id).ServerBlockedUsers.Add(u.Id);
-					await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Green, Description = $"Benutzer {u.Username}#{u.Discriminator} wurde von der Nutzung des Bots auf dem server gebannt" });
+					await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Green, Description = $"User {u.Username}#{u.Discriminator} has been banned from using the bot on this server." });
 				}
 				else
 				{
 					servers.Find(x => x.Id == e.Guild.Id).ServerBlockedUsers.Remove(u.Id);
-					await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Green, Description = $"Benutzer {u.Username}#{u.Discriminator} wurde von der Nutzung des Bots auf dem server entbannt" });
+					await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Green, Description = $"User {u.Username}#{u.Discriminator} has been unbanned from using the bot on this server" });
 				}
 				System.IO.File.WriteAllText("config/RegServers.json", Newtonsoft.Json.JsonConvert.SerializeObject(servers));
 			}

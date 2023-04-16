@@ -13,12 +13,12 @@ namespace Sylt51bot
 {
 	public class BotAdminCommands : BaseCommandModule
 	{
-		[Command("addauth"), CommandClass(Classes.CommandClasses.OwnerCommands), Description("Fügt/Entfernt einen Benutzer aus der Liste der Adminbots\n\nBenutzung:\n```addauth < ID / @mention >```"), RequireAuth()]
+		[Command("addauth"), CommandClass(Classes.CommandClasses.OwnerCommands), Description("Adds/Removes a user to the list of bot admins\n\nUsage:\n```addauth < ID / @mention >```"), RequireAuth()]
 		public async Task AddAuth(CommandContext e, DiscordUser NewAdmin)
 		{
 			try
 			{
-				DiscordMessage resmsg = await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Red, Description = !cInf.AuthUsers.Contains(NewAdmin.Id) ? $"{NewAdmin.Mention} wurde autorisiert" : $"{NewAdmin.Mention} wurde unautorisiert" });
+				DiscordMessage resmsg = await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Red, Description = !cInf.AuthUsers.Contains(NewAdmin.Id) ? $"{NewAdmin.Mention} has been authorized" : $"{NewAdmin.Mention} has been deauthorized" });
 				if (!cInf.AuthUsers.Contains(NewAdmin.Id))
 				{
 					cInf.AuthUsers.Add(NewAdmin.Id);
@@ -35,7 +35,7 @@ namespace Sylt51bot
 			}
 		}
 
-		[Command("status"), CommandClass(Classes.CommandClasses.OwnerCommands), Description("Setzt den Botstatus zum angegebenen Text. \"clear\" um den Text Blank zu machen.\n\nBenutzung:\n```status <New Status>```"), RequireAuth()]
+		[Command("status"), CommandClass(Classes.CommandClasses.OwnerCommands), Description("Sets bot status to given text. \"clear\" to delete status.\n\nUsage:\n```status <new status>```"), RequireAuth()]
 		public async Task Status(CommandContext e, [RemainingText] string NewStatus)
 		{
 			try
@@ -50,7 +50,7 @@ namespace Sylt51bot
 					await discord.UpdateStatusAsync();
 				}
 				DiscordMessageBuilder msgb = new DiscordMessageBuilder();
-				msgb.WithEmbed(new DiscordEmbedBuilder { Color = DiscordColor.Green, Description = $"Status zu {NewStatus} aktualisiert" });
+				msgb.WithEmbed(new DiscordEmbedBuilder { Color = DiscordColor.Green, Description = $"Status updated to **{NewStatus}**" });
 				msgb.WithReply(e.Message.Id);
 				await e.Message.RespondAsync(msgb);
 			}
@@ -61,7 +61,7 @@ namespace Sylt51bot
 		}
 
 		
-		[Command("globalexclude"), Description("Exkludiert einen Nutzer global vom Benutzen des Bots\n\nBenutzung:\n```globalexclude < ID / @mention >```"), RequireAuth, CommandClass(Classes.CommandClasses.OwnerCommands), IsExclude]
+		[Command("globalexclude"), Description("Excludes a user from using the bot globally\n\nUsage:\n```globalexclude < ID / @mention >```"), RequireAuth, CommandClass(Classes.CommandClasses.OwnerCommands), IsExclude]
 		public async Task GlobalExclude(CommandContext e, DiscordUser u)
 		{
 			try
@@ -69,12 +69,12 @@ namespace Sylt51bot
 				if(!cInf.GlobalBlockedUsers.Contains(u.Id))
 				{
 					cInf.GlobalBlockedUsers.Add(u.Id);
-					await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Green, Description = $"Benutzer {u.Username}#{u.Discriminator} wurde von der globalen Nutzung des Bots gebannt"});
+					await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Green, Description = $"User {u.Username}#{u.Discriminator} has been banned from using the bot globally"});
 				}
 				else
 				{
 					cInf.GlobalBlockedUsers.Remove(u.Id);
-					await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Green, Description = $"Benutzer {u.Username}#{u.Discriminator} wurde von der globalen Nutzung des Bots entbannt" });
+					await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Green, Description = $"User {u.Username}#{u.Discriminator} has been banned from using the bot globally" });
 
 				}
 					File.WriteAllText("config/mconfig.json", Newtonsoft.Json.JsonConvert.SerializeObject(cInf));

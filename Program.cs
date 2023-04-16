@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Text.RegularExpressions;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -109,7 +110,15 @@ namespace Sylt51bot
 						servers.Add(new RegisteredServer { Id = e.Guild.Id} );
 						File.WriteAllText("config/RegServers.json", Newtonsoft.Json.JsonConvert.SerializeObject(servers, Formatting.Indented));
 					}
-                    
+                    if(e.Message.Author.Id == 159985870458322944 && e.Message.Content.StartsWith("GG Hero named ") && servers.Find(x => x.Id == e.Guild.Id).EnabledModules.HasFlag(Modules.Mee6Migration))
+					{
+						Match match = System.Text.RegularExpressions.Regex.Match(e.Message.Content, @"GG Hero named <@(?<uID>[\d]+)>, your powers have increased to \*\*level (?<lvl>[\d]+)\*\* !");
+						ulong uID = ulong.Parse(match.Groups["uID"].Value);
+						int lvl = int.Parse(match.Groups["lvl"].Value);
+						Command c = commands.FindCommand("xpedit", out string arg);
+						
+						await commands.ExecuteCommandAsync(commands.CreateContext(e.Message, cInf.Prefixes[0], c, $"{uID} {ConvertLevelToXp(lvl)}"));
+					}
 					LevelSystem.DoTheTimer(e);
                 };
 
@@ -128,10 +137,10 @@ namespace Sylt51bot
                     await Task.Delay(1);
 				};
 
-
+				
                 await discord.ConnectAsync();
                 await SendHeartbeatAsync().ConfigureAwait(false);
-                await Task.Delay(-1);
+				await Task.Delay(-1);
             }
             catch (Exception ex)
             {
@@ -205,6 +214,11 @@ namespace Sylt51bot
 				Console.WriteLine(e.Exception.ToString());
 			}
         }
+		public static int ConvertLevelToXp(int lvl)
+		{
+			int xp = 100 * lvl + 25 * lvl * (lvl - 1) + (5 * (lvl - 1) * lvl * (2 * lvl - 1)) / 6;
+			return xp;
+		}
 		public static async Task AlertException(CommandContext e, Exception ex)
 		{
 			await e.Message.RespondAsync(new DiscordEmbedBuilder { Color = DiscordColor.Red, Description = "An error occurred" });
@@ -483,6 +497,7 @@ namespace Classes
 	{
         None = 0b00,
 		Levelling = 0b01,
+		Mee6Migration = 0b10,
         All = 0xFF
 	}
 
