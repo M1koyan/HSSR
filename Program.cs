@@ -483,11 +483,6 @@ namespace Classes
 		public TimeSpan CoolDown { get; set; } = TimeSpan.FromMinutes(2);
 		public Modules EnabledModules { get; set; } = Modules.None;
 		public List<ulong> ServerBlockedUsers { get; set; } = new List<ulong>();
-		public RegisteredServer()
-		{
-			lvlroles = new List<LevelRole>();
-			lvlroles.Add(new LevelRole { RoleId = 0, XpReq = 0, Name = "No Role"});
-		}
 	}
 
 	public class LevelRole
