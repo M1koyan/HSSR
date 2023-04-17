@@ -76,7 +76,7 @@ namespace Sylt51bot
 		public override BaseHelpFormatter WithSubcommands(IEnumerable<Command> cmds)
 		{
 			_embed.Title = "Help";
-			_embed.Description = $"More information with `{cInf.Prefixes[0]}help <befehlname>`";
+			_embed.Description = $"More information with `{cInf.Prefixes[0]}help <commandname>`";
 			_embed.Color = DiscordColor.Green;
 
 			foreach (var cclass in Enum.GetValues(typeof(Classes.CommandClasses)))

@@ -43,44 +43,47 @@ namespace Sylt51bot
 				int userslevel = 0;
 				int j = 0;
 				bool hasChanged = false;
-				try
+				if(s.EnabledModules.HasFlag(Modules.AssignLevelRoles))
 				{
-					foreach (LevelRole i in s.lvlroles)
+					try
 					{
-						if(i.RoleId == 0)
+						foreach (LevelRole i in s.lvlroles)
 						{
-							continue;
-						}
-
-						if (i.XpReq <= s.xplist[e.Author.Id] && i.RoleId != 0)
-						{
-							userslevel++;
-							j++;
-							if (!(await e.Guild.GetMemberAsync(e.Author.Id)).Roles.Any(x => x.Id == i.RoleId))
+							if(i.RoleId == 0)
 							{
-								await (await e.Guild.GetMemberAsync(e.Author.Id)).GrantRoleAsync(e.Guild.GetRole(i.RoleId));
-								hasChanged = true;
+								continue;
 							}
 
-						}
-						else
-						{
-							j++;
-							if ((await e.Guild.GetMemberAsync(e.Author.Id)).Roles.Any(x => x.Id == i.RoleId))
+							if (i.XpReq <= s.xplist[e.Author.Id] && i.RoleId != 0)
 							{
-								await (await e.Guild.GetMemberAsync(e.Author.Id)).RevokeRoleAsync(e.Guild.GetRole(s.lvlroles.Find(x => x.RoleId == i.RoleId).RoleId));
+								userslevel++;
+								j++;
+								if (!(await e.Guild.GetMemberAsync(e.Author.Id)).Roles.Any(x => x.Id == i.RoleId))
+								{
+									await (await e.Guild.GetMemberAsync(e.Author.Id)).GrantRoleAsync(e.Guild.GetRole(i.RoleId));
+									hasChanged = true;
+								}
+
+							}
+							else
+							{
+								j++;
+								if ((await e.Guild.GetMemberAsync(e.Author.Id)).Roles.Any(x => x.Id == i.RoleId))
+								{
+									await (await e.Guild.GetMemberAsync(e.Author.Id)).RevokeRoleAsync(e.Guild.GetRole(s.lvlroles.Find(x => x.RoleId == i.RoleId).RoleId));
+								}
 							}
 						}
+						if (hasChanged == true)
+						{
+							await discord.SendMessageAsync(e.Channel, new DiscordEmbedBuilder { Description = $"**{e.Author.Mention}** reached level **`{userslevel}`**!", Color = DiscordColor.Green });
+						}
+						File.WriteAllText("config/RegServers.json", JsonConvert.SerializeObject(servers, Formatting.Indented));
 					}
-					if (hasChanged == true)
+					catch (DSharpPlus.Exceptions.UnauthorizedException)
 					{
-						await discord.SendMessageAsync(e.Channel, new DiscordEmbedBuilder { Description = $"**{e.Author.Mention}** reached level **`{userslevel}`**!", Color = DiscordColor.Green });
+						await e.Channel.SendMessageAsync("I don't have permission to edit roles!");
 					}
-					File.WriteAllText("config/RegServers.json", JsonConvert.SerializeObject(servers, Formatting.Indented));
-				}
-				catch (DSharpPlus.Exceptions.UnauthorizedException)
-				{
-					await e.Channel.SendMessageAsync("I don't have permission to edit roles!");
 				}
 			}
 			catch (Exception ex)

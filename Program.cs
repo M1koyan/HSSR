@@ -495,9 +495,10 @@ namespace Classes
 	[Flags]
 	public enum Modules
 	{
-        None = 0b00,
-		Levelling = 0b01,
-		Mee6Migration = 0b10,
+        None = 0x00,
+		Levelling = 0b0001,
+		Mee6Migration = 0b0010,
+		AssignLevelRoles = 0b0011,
         All = 0xFF
 	}
 
