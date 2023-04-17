@@ -468,7 +468,7 @@ namespace Classes
 		public string GitHub { get; set; } = "";
         public List<ulong> AuthUsers { get; set; } = new List<ulong>();
 		public List<ulong> GlobalBlockedUsers { get; set; } = new List<ulong>();
-		public string Version = "1.0.0";
+		public string Version = "1.0.1";
 	}
 
 	public class RegisteredServer
