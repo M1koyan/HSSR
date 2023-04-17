@@ -162,7 +162,7 @@ namespace Sylt51bot
 			}
 		}
 
-		[Command("top"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Shows the servers xp leaderboard\n\nUsage:\n```top [page, defaults to 1]```"), Aliases("lb"), Module(Modules.Levelling)]
+		[Command("top"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), Description("Shows the servers xp leaderboard\n\nUsage:\n```top [page, defaults to 1]```"), Aliases("lb")]
 		public async Task Leaderboard(CommandContext e, int page = 1)
 		{
 			try
@@ -295,7 +295,7 @@ namespace Sylt51bot
 							}
 						}
 						embed.AddField("Progress", $"**```{s.xplist[user.Id] - s.lvlroles[userslevel].XpReq}xp / {s.lvlroles[userslevel + 1].XpReq - s.lvlroles[userslevel].XpReq}xp```**\n" + progstring, true);
-						embed.AddField("Next Level", $"**[Level {s.lvlroles.IndexOf(s.lvlroles[userslevel + 1])}]** | **<@&{s.lvlroles[userslevel + 1].RoleId}> | {s.lvlroles[userslevel + 1].XpReq} Gesamt XP benötigt**", false);
+						embed.AddField("Next Level", $"**[Level {s.lvlroles.IndexOf(s.lvlroles[userslevel + 1])}]** | **<@&{s.lvlroles[userslevel + 1].RoleId}> | {s.lvlroles[userslevel + 1].XpReq} total xp needed**", false);
 					}
 					else
 					{

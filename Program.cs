@@ -483,6 +483,11 @@ namespace Classes
 		public TimeSpan CoolDown { get; set; } = TimeSpan.FromMinutes(2);
 		public Modules EnabledModules { get; set; } = Modules.None;
 		public List<ulong> ServerBlockedUsers { get; set; } = new List<ulong>();
+		public RegisteredServer()
+		{
+			lvlroles = new List<LevelRole>();
+			lvlroles.Add(new LevelRole { RoleId = 0, XpReq = 0, Name = "No Role"});
+		}
 	}
 
 	public class LevelRole
@@ -495,10 +500,10 @@ namespace Classes
 	[Flags]
 	public enum Modules
 	{
-        None = 0x00,
+        None = 0b0000,
 		Levelling = 0b0001,
 		Mee6Migration = 0b0010,
-		AssignLevelRoles = 0b0011,
+		AssignLevelRoles = 0b0100,
         All = 0xFF
 	}
 
