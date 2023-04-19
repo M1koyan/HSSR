@@ -4,8 +4,8 @@ using DSharpPlus.Entities;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using CAttributes;
-using static Sylt51bot.Program;
-namespace Sylt51bot
+using static HSSR.Program;
+namespace HSSR
 {
 	public class ModeratorCommands : BaseCommandModule
 	{

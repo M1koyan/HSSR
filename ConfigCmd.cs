@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using static Sylt51bot.Program;
-namespace Sylt51bot
+using static HSSR.Program;
+namespace HSSR
 {
 	[Group("config"), Description("Contains commands for the configuration within a server.\n\nUsage:\n```config <commandname>```"), IsExclude(), CommandClass(CommandClasses.ConfigCommands)]
 	public class ConfigCommands : BaseCommandModule

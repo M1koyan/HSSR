@@ -9,9 +9,9 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Entities;
 using DSharpPlus.CommandsNext.Converters;
-using static Sylt51bot.Program;
+using static HSSR.Program;
 using CAttributes;
-namespace Sylt51bot
+namespace HSSR
 {
 	public class CustomHelpFormatter : BaseHelpFormatter
 	{

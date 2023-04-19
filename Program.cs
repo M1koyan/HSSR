@@ -11,7 +11,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using Newtonsoft.Json;
 using Classes;
 
-namespace Sylt51bot
+namespace HSSR
 {
     class Program
     {
@@ -26,7 +26,7 @@ namespace Sylt51bot
 		public static List<RegisteredServer> servers; // The list registered of servers
 		static void Main(string[] args)
         {
-            try
+			try
             {
                 if (File.Exists("config/mconfig.json"))
                 {
@@ -86,7 +86,7 @@ namespace Sylt51bot
                 Environment.Exit(0);
             }
             MainAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-        }
+		}
 
         static async Task MainAsync()
         {
@@ -109,15 +109,6 @@ namespace Sylt51bot
 					{
 						servers.Add(new RegisteredServer { Id = e.Guild.Id} );
 						File.WriteAllText("config/RegServers.json", Newtonsoft.Json.JsonConvert.SerializeObject(servers, Formatting.Indented));
-					}
-                    if(e.Message.Author.Id == 159985870458322944 && e.Message.Content.StartsWith("GG Hero named ") && servers.Find(x => x.Id == e.Guild.Id).EnabledModules.HasFlag(Modules.Mee6Migration))
-					{
-						Match match = System.Text.RegularExpressions.Regex.Match(e.Message.Content, @"GG Hero named <@(?<uID>[\d]+)>, your powers have increased to \*\*level (?<lvl>[\d]+)\*\* !");
-						ulong uID = ulong.Parse(match.Groups["uID"].Value);
-						int lvl = int.Parse(match.Groups["lvl"].Value);
-						Command c = commands.FindCommand("xpedit", out string arg);
-						
-						await commands.ExecuteCommandAsync(commands.CreateContext(e.Message, cInf.Prefixes[0], c, $"{uID} {ConvertLevelToXp(lvl)}"));
 					}
 					LevelSystem.DoTheTimer(e);
                 };
@@ -333,7 +324,7 @@ namespace CAttributes
 		}
 		public override Task<bool> ExecuteCheckAsync(CommandContext e, bool help)
 		{
-			return Task.FromResult(Sylt51bot.Program.servers.Find(x => x.Id == e.Guild.Id).EnabledModules.HasFlag(module));
+			return Task.FromResult(HSSR.Program.servers.Find(x => x.Id == e.Guild.Id).EnabledModules.HasFlag(module));
 		}
 	}
 
@@ -342,7 +333,7 @@ namespace CAttributes
 	{
 		public override Task<bool> ExecuteCheckAsync(CommandContext e, bool help)
 		{
-			return Task.FromResult(Sylt51bot.Program.cInf.AuthUsers.Contains(e.User.Id));
+			return Task.FromResult(HSSR.Program.cInf.AuthUsers.Contains(e.User.Id));
 		}
 	}
 
@@ -450,7 +441,7 @@ namespace CAttributes
 
 		public override Task<bool> ExecuteCheckAsync(CommandContext e, bool help)
 		{
-			return Task.FromResult(!Sylt51bot.Program.servers.Find(x => x.Id == e.Guild.Id).ServerBlockedUsers.Contains(e.Message.Author.Id) && !Sylt51bot.Program.cInf.GlobalBlockedUsers.Contains(e.Message.Author.Id));
+			return Task.FromResult(!HSSR.Program.servers.Find(x => x.Id == e.Guild.Id).ServerBlockedUsers.Contains(e.Message.Author.Id) && !HSSR.Program.cInf.GlobalBlockedUsers.Contains(e.Message.Author.Id));
 		}
 	}
 }
@@ -468,7 +459,7 @@ namespace Classes
 		public string GitHub { get; set; } = "";
         public List<ulong> AuthUsers { get; set; } = new List<ulong>();
 		public List<ulong> GlobalBlockedUsers { get; set; } = new List<ulong>();
-		public string Version = "1.0.1";
+		public string Version = "1.0.2";
 	}
 
 	public class RegisteredServer
@@ -497,8 +488,6 @@ namespace Classes
 	{
         None = 0b0000,
 		Levelling = 0b0001,
-		Mee6Migration = 0b0010,
-		AssignLevelRoles = 0b0100,
         All = 0xFF
 	}
 

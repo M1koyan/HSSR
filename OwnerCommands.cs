@@ -6,10 +6,10 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using static Sylt51bot.Program;
+using static HSSR.Program;
 using CAttributes;
 
-namespace Sylt51bot
+namespace HSSR
 {
 	public class BotAdminCommands : BaseCommandModule
 	{

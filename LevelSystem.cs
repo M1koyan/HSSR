@@ -8,11 +8,11 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using Newtonsoft.Json;
-using static Sylt51bot.Program;
+using static HSSR.Program;
 using Classes;
 using CAttributes;
 using System.Linq;
-namespace Sylt51bot
+namespace HSSR
 {
 	public static class LevelSystem
 	{
@@ -43,47 +43,44 @@ namespace Sylt51bot
 				int userslevel = 0;
 				int j = 0;
 				bool hasChanged = false;
-				if(s.EnabledModules.HasFlag(Modules.AssignLevelRoles))
+				try
 				{
-					try
+					foreach (LevelRole i in s.lvlroles)
 					{
-						foreach (LevelRole i in s.lvlroles)
+						if(i.RoleId == 0)
 						{
-							if(i.RoleId == 0)
+							continue;
+						}
+
+						if (i.XpReq <= s.xplist[e.Author.Id] && i.RoleId != 0)
+						{
+							userslevel++;
+							j++;
+							if (!(await e.Guild.GetMemberAsync(e.Author.Id)).Roles.Any(x => x.Id == i.RoleId))
 							{
-								continue;
+								await (await e.Guild.GetMemberAsync(e.Author.Id)).GrantRoleAsync(e.Guild.GetRole(i.RoleId));
+								hasChanged = true;
 							}
 
-							if (i.XpReq <= s.xplist[e.Author.Id] && i.RoleId != 0)
-							{
-								userslevel++;
-								j++;
-								if (!(await e.Guild.GetMemberAsync(e.Author.Id)).Roles.Any(x => x.Id == i.RoleId))
-								{
-									await (await e.Guild.GetMemberAsync(e.Author.Id)).GrantRoleAsync(e.Guild.GetRole(i.RoleId));
-									hasChanged = true;
-								}
-
-							}
-							else
-							{
-								j++;
-								if ((await e.Guild.GetMemberAsync(e.Author.Id)).Roles.Any(x => x.Id == i.RoleId))
-								{
-									await (await e.Guild.GetMemberAsync(e.Author.Id)).RevokeRoleAsync(e.Guild.GetRole(s.lvlroles.Find(x => x.RoleId == i.RoleId).RoleId));
-								}
-							}
 						}
-						if (hasChanged == true)
+						else
 						{
-							await discord.SendMessageAsync(e.Channel, new DiscordEmbedBuilder { Description = $"**{e.Author.Mention}** reached level **`{userslevel}`**!", Color = DiscordColor.Green });
+							j++;
+							if ((await e.Guild.GetMemberAsync(e.Author.Id)).Roles.Any(x => x.Id == i.RoleId))
+							{
+								await (await e.Guild.GetMemberAsync(e.Author.Id)).RevokeRoleAsync(e.Guild.GetRole(s.lvlroles.Find(x => x.RoleId == i.RoleId).RoleId));
+							}
 						}
-						File.WriteAllText("config/RegServers.json", JsonConvert.SerializeObject(servers, Formatting.Indented));
 					}
-					catch (DSharpPlus.Exceptions.UnauthorizedException)
+					if (hasChanged == true)
 					{
-						await e.Channel.SendMessageAsync("I don't have permission to edit roles!");
+						await discord.SendMessageAsync(e.Channel, new DiscordEmbedBuilder { Description = $"**{e.Author.Mention}** reached level **`{userslevel}`**!", Color = DiscordColor.Green });
 					}
+					File.WriteAllText("config/RegServers.json", JsonConvert.SerializeObject(servers, Formatting.Indented));
+				}
+				catch (DSharpPlus.Exceptions.UnauthorizedException)
+				{
+					await e.Channel.SendMessageAsync("I don't have permission to edit roles!");
 				}
 			}
 			catch (Exception ex)
@@ -319,7 +316,7 @@ namespace Sylt51bot
 				await AlertException(e, ex);
 			}
 		}
-		[Command("convertleveltoxp"), CommandClass(CommandClasses.LevelCommands), RequireGuild(), RequireUserPermissions2(Permissions.ManageGuild), RequireBotPermissions2(Permissions.ManageRoles & Permissions.SendMessages)]
+		[Command("convertleveltoxp"), CommandClass(CommandClasses.LevelCommands), RequireGuild()]
 		public async Task ConvertLevelToXpCmd(CommandContext e, int lvl)
 		{
 			await e.RespondAsync(Program.ConvertLevelToXp(lvl).ToString());
