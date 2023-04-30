@@ -8,6 +8,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.SlashCommands;
 using Newtonsoft.Json;
 using Classes;
 
@@ -16,6 +17,7 @@ namespace HSSR
     class Program
     {
 		public static CommandsNextExtension commands;
+		public static SlashCommandsExtension slash;
 		public static DiscordClient discord;
 		public static DiscordActivity g1 = new DiscordActivity("");
 		public static ulong LastHb = 0; // Last heartbeat message
@@ -23,6 +25,7 @@ namespace HSSR
         
 		public static CommandsNextConfiguration cNcfg; // The commanddsnext config
 		public static DiscordConfiguration dCfg; // The discord config
+		public static SlashCommandsConfiguration sCfg;
 		public static List<RegisteredServer> servers; // The list registered of servers
 		static void Main(string[] args)
         {
@@ -79,6 +82,10 @@ namespace HSSR
                     TokenType = TokenType.Bot,
                     Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents,
                 };
+				sCfg = new SlashCommandsConfiguration
+				{
+
+				};
             }
             catch(Exception ex)
             {
@@ -94,6 +101,7 @@ namespace HSSR
             {
                 discord = new DiscordClient(dCfg);
                 commands = discord.UseCommandsNext(cNcfg);
+				slash = discord.UseSlashCommands(sCfg);
 
                 commands.CommandErrored += CmdErrorHandler;
                 commands.SetHelpFormatter<CustomHelpFormatter>();
@@ -103,6 +111,7 @@ namespace HSSR
 				commands.RegisterCommands<ConfigCommands>();
 				commands.RegisterCommands<ModeratorCommands>();
                 
+				slash.RegisterCommands<SlashCommands>();
 				discord.MessageCreated += async (client, e) =>
                 {
 					if(servers.FindIndex(x => x.Id == e.Guild.Id) == -1)

@@ -5,6 +5,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.SlashCommands;
 using static HSSR.Program;
 using CAttributes;
 namespace HSSR
@@ -36,6 +37,14 @@ namespace HSSR
 			{
 				await AlertException(e, ex);
 			}
+		}
+	}
+	public class SlashCommands : ApplicationCommandModule
+	{
+		[SlashCommand("ping", "aurghgh")]
+		public async Task Ping(InteractionContext e)
+		{
+			await e.CreateResponseAsync(discord.Ping.ToString());
 		}
 	}
 }
